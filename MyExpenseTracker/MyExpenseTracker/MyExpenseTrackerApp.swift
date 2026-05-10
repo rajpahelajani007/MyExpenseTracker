@@ -11,7 +11,8 @@ import SwiftUI
 struct MyExpenseTrackerApp: App {
     var body: some Scene {
         WindowGroup {
-            MyHomeScreen()
+            CounterScreen()
+//            MyHomeScreen()
         }
     }
 }
