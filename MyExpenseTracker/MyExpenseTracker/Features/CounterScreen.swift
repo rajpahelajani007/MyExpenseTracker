@@ -46,24 +46,6 @@ struct CounterScreen: View {
                 }
                 
                 ResetButton(objectModel: self.objectModel)
-                
-//                Button {
-//                    self.objectModel.name = ""
-//                    self.objectModel.counterValue = 0
-//                } label: {
-////                    ZStack {
-////                        Color(.blue)
-//                        Text("Reset")
-//                            .foregroundStyle(.white)
-//                            .fontWeight(.bold)
-//                            .font(.title3)
-//                            .padding(.horizontal, 20)
-//                            .padding(.vertical, 8)
-//                            .background(Color.blue)
-//                            .cornerRadius(10)
-//                        
-////                    }
-//                }
 
                 TextField("Enter you name", text: self.$objectModel.name)
                     .textFieldStyle(.roundedBorder)
