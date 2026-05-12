@@ -22,6 +22,14 @@ struct ExpenseList: View {
             List(viewModel.expenses) { expense in
                 ExpenseView(expense: expense)
             }
+            .toolbar {
+                NavigationLink {
+                    AddExpenseView(viewModel: viewModel)
+                } label: {
+                    Image(systemName: "plus")
+                }
+
+            }
             .navigationTitle("Expenses")
         }
     }

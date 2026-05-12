@@ -22,4 +22,8 @@ class ExpenseViewModel: ObservableObject {
             partialResult + expense.amount
         }
     }
+    
+    func addExpense(title: String, amount: Double, category: String) {
+        self.expenses.append(Expense(title: title, amount: amount, category: category))
+    }
 }
