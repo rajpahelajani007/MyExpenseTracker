@@ -16,10 +16,17 @@ struct ExpenseView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text(expense.title)
                 .font(.headline)
-            Text(expense.category)
-                .foregroundStyle(.gray)
-            Text("$ \(expense.amount, specifier: "%.2f")")
-                .fontWeight(.bold)
+            HStack {
+                Text(expense.category)
+                    .foregroundStyle(.gray)
+                Spacer()
+                Text("$ \(expense.amount, specifier: "%.2f")")
+                    .fontWeight(.bold)
+            }
         }.padding(.vertical, 8)
     }
+}
+
+#Preview {
+    ExpenseView(expense: Expense(title: "Coffee", amount: 99, category: "Food"))
 }

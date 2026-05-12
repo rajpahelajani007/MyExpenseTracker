@@ -19,8 +19,17 @@ struct ExpenseList: View {
                 .fontWeight(.bold)
                 .font(.title2)
                 .padding()
-            List(viewModel.expenses) { expense in
-                ExpenseView(expense: expense)
+            List {
+                ForEach(viewModel.expenses) { thisExpense in
+                    NavigationLink {
+                        EditExpenseView(viewModel: self.viewModel, expense: thisExpense)
+                    } label: {
+                        ExpenseView(expense: thisExpense)
+                    }
+                }.onDelete { index in
+                    self.viewModel.deleteExpense(at: index)
+                }
+                    
             }
             .toolbar {
                 NavigationLink {
