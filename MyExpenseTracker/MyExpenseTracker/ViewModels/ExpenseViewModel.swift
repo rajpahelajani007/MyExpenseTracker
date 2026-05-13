@@ -24,6 +24,11 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
+    private let service = APIManager()
+    
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
+    
     func addExpense(title: String, amount: Double, category: String) {
         self.expenses.append(Expense(title: title, amount: amount, category: category))
     }
@@ -37,5 +42,26 @@ class ExpenseViewModel: ObservableObject {
         if let index = self.expenses.firstIndex(where: {$0.id == expense.id}) {
             self.expenses[index] = Expense(title: title, amount: amount, category: category)
         }
+    }
+    
+    @MainActor
+    func getListOfPosts() async {
+        
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            let thisArray: [Posts] = try await service.request(urlString: "https://jsonplaceholder.typicode.com/posts", method: .GET, headers: [:])
+            self.expenses.removeAll()
+            for thisPost in thisArray {
+                let thisExpense = Expense(title: thisPost.title, amount: Double(thisPost.id), category: thisPost.body)
+                self.expenses.append(thisExpense)
+            }
+        } catch let error {
+            errorMessage = error.localizedDescription
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+            self.isLoading = false
+        })
     }
 }

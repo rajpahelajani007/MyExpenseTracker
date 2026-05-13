@@ -8,7 +8,7 @@
 import UIKit
 import Foundation
 
-struct Expense: Decodable, Identifiable {
+struct Expense: Codable, Identifiable {
     
     var id = UUID()
     var title: String

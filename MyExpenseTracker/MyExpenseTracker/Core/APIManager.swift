@@ -8,9 +8,11 @@
 import UIKit
 import Foundation
 
-struct Users: Codable {
+struct Posts: Codable, Identifiable {
     let id: Int
-    let name: String
+    let title: String
+    let userId: Int
+    var body: String
 }
 
 enum HTTPMethod: String {
@@ -29,12 +31,12 @@ enum APIError: Error {
 
 class APIManager: NSObject {
     
-    static let shared = APIManager()
+//    static let shared = APIManager()
     
-    func fetchUsers() async throws -> [Users] {
-        let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+    func fetchPosts() async throws -> [Posts] {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         let (data, _) = try await URLSession.shared.data(from: url)
-        let users = try JSONDecoder().decode([Users].self, from: data)
+        let users = try JSONDecoder().decode([Posts].self, from: data)
         return users
     }
     
