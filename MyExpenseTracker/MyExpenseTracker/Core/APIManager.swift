@@ -74,3 +74,18 @@ class APIManager: NSObject {
     }
 }
 
+extension APIError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "The URL provided was invalid."
+        case .invalidResponse:
+            return "Received an invalid response from the server."
+        case .decodingError:
+            return "Failed to decode the response data from the API."
+        case .serverError(let statusCode):
+            return "Server returned an error with status code: \(statusCode)."
+        }
+    }
+}
+

@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import SwiftUI
 
+@MainActor
 class ExpenseViewModel: ObservableObject {
     
     @Published var expenses: [Expense] = [
@@ -17,6 +18,8 @@ class ExpenseViewModel: ObservableObject {
         Expense(title: "Uber", amount: 500, category: "Travel"),
         Expense(title: "Netflix", amount: 649, category: "Entertainment"),
     ]
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
     
     var totalExpense: Double {
         expenses.reduce(0) { partialResult, expense in
@@ -24,10 +27,18 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
-    private let service = APIManager()
+    private let service: ExpenseServiceProtocol
     
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
+    init() {
+        self.service = ExpenseService()
+    }
+    
+    // Injected init
+    
+    init(service: ExpenseServiceProtocol) {
+        self.service = service
+    }
+    
     
     func addExpense(title: String, amount: Double, category: String) {
         self.expenses.append(Expense(title: title, amount: amount, category: category))
@@ -44,19 +55,19 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
-    @MainActor
-    func getListOfPosts() async {
+    func getListOfExpenses() async {
         
         isLoading = true
         errorMessage = nil
         
         do {
-            let thisArray: [Posts] = try await service.request(urlString: "https://jsonplaceholder.typicode.com/posts", method: .GET, headers: [:])
-            self.expenses.removeAll()
-            for thisPost in thisArray {
-                let thisExpense = Expense(title: thisPost.title, amount: Double(thisPost.id), category: thisPost.body)
-                self.expenses.append(thisExpense)
-            }
+            self.expenses = try await service.fetchExpenses()
+//            let thisArray: [Posts] = try await service.request(urlString: "https://jsonplaceholder.typicode.com/posts", method: .GET, headers: [:])
+//            self.expenses.removeAll()
+//            for thisPost in thisArray {
+//                let thisExpense = Expense(title: thisPost.title, amount: Double(thisPost.id), category: thisPost.body)
+//                self.expenses.append(thisExpense)
+//            }
         } catch let error {
             errorMessage = error.localizedDescription
         }

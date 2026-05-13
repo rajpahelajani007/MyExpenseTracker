@@ -11,16 +11,20 @@ import SwiftUI
 
 struct ExpenseList: View {
     
-    @StateObject var viewModel = ExpenseViewModel()
+    @StateObject var viewModel: ExpenseViewModel
+    
+    init(viewModel: ExpenseViewModel) {
+
+        _viewModel = StateObject(
+            wrappedValue: viewModel
+        )
+    }
     
     var body: some View {
         NavigationStack {
             VStack {
                 if viewModel.isLoading {
                     ProgressView("API is loading...")
-                    //                Text("API is loading...")
-                    //                    .font(.title)
-                    //                    .fontWeight(.bold)
                 } else if let error =  viewModel.errorMessage {
                     Text("Error: \(error)")
                         .foregroundStyle(.red)
@@ -65,12 +69,13 @@ struct ExpenseList: View {
             .navigationTitle("Expenses")
             .task {
                 //comment this line to perform crud operations
-                await viewModel.getListOfPosts()
+                await viewModel.getListOfExpenses()
             }
         }
     }
 }
 
 #Preview {
-    ExpenseList()
+    let vm = ExpenseViewModel(service: MockExpenseService())
+    ExpenseList(viewModel: vm)
 }
