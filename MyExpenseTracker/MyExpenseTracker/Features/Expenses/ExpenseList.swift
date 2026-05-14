@@ -24,10 +24,24 @@ struct ExpenseList: View {
         NavigationStack {
             VStack {
                 if viewModel.isLoading {
-                    ProgressView("API is loading...")
+                    VStack(spacing: 16) {
+
+                        ProgressView()
+
+                        Text("Loading Expenses...")
+                            .foregroundColor(.gray)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let error =  viewModel.errorMessage {
-                    Text("Error: \(error)")
-                        .foregroundStyle(.red)
+                    VStack {
+                        Text("Error: \(error)")
+                            .foregroundStyle(.red)
+                        Button("Retry") {
+                            Task {
+                                await viewModel.retryAPICall()
+                            }
+                        }.buttonStyle(.borderedProminent)
+                    }
                 }  else if viewModel.expenses.isEmpty {
                     
                     VStack {
@@ -57,7 +71,10 @@ struct ExpenseList: View {
                     }
                 }
             }
-            
+            .animation(
+                .easeInOut,
+                value: viewModel.isLoading
+            )
             .toolbar {
                 NavigationLink {
                     AddExpenseView(viewModel: viewModel)
@@ -69,6 +86,9 @@ struct ExpenseList: View {
             .navigationTitle("Expenses")
             .task {
                 //comment this line to perform crud operations
+                await viewModel.getListOfExpenses()
+            }
+            .refreshable {
                 await viewModel.getListOfExpenses()
             }
         }

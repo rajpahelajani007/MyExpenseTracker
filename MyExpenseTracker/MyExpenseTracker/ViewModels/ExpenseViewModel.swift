@@ -75,4 +75,8 @@ class ExpenseViewModel: ObservableObject {
             self.isLoading = false
         })
     }
+    
+    func retryAPICall() async {
+        await self.getListOfExpenses()
+    }
 }
